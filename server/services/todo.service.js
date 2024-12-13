@@ -53,11 +53,8 @@ async function postTodo(data) {
 
 async function patchTodo(id, data) {
   const existingData = await todoRepository.get(id);
-  console.log("🚀 ~ existingData:", existingData);
 
   if (!existingData) return undefined;
-
-  console.log("here ");
 
   return todoRepository.update(id, data);
 }
