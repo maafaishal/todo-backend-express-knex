@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const todoRoutes = require("./routes/todo.route");
-// const workspaceRoutes = require("./routes/todo.route");
+const workspaceRoutes = require("./routes/workspace.route");
 const authRoutes = require("./routes/auth.route");
 
 const port = process.env.PORT || 5000;
@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
 });
 
 app.use("/api/todos", todoRoutes);
-// app.use("/api/workspaces", workspaceRoutes);
+app.use("/api/workspaces", workspaceRoutes);
 app.use("/api/auth", authRoutes);
 
 if (process.env.NODE_ENV !== "test") {

@@ -1,19 +1,21 @@
 const _ = require("lodash");
 
-const todoRepository = require("../repositories/todo.repository.js");
+const workspaceRepository = require("../repositories/workspace.repository.js");
+const workspaceMemberRepository = require("../repositories/workspace-member.repository.js");
 
 const appConfig = require("../configs/app.config.js");
 
-async function getAllWorkspaces(queryParams) {
+async function getAllWorkspaces(queryParams, userId) {
   const limit = appConfig.todoLimit;
 
   const [data, countData] = await Promise.all([
-    todoRepository.all({
+    workspaceRepository.all(userId, {
       ...queryParams,
       limit,
     }),
-    todoRepository.count(),
+    workspaceRepository.count(),
   ]);
+  console.log("🚀 ~ getAllWorkspaces ~ data:", data);
 
   const totalData = parseInt(countData[0].count, 10);
   const totalPages = Math.ceil(totalData / limit);
@@ -21,7 +23,7 @@ async function getAllWorkspaces(queryParams) {
   return {
     data,
     pagination: {
-      page,
+      page: queryParams.page,
       limit,
       total: totalData,
       totalPages,
@@ -29,28 +31,55 @@ async function getAllWorkspaces(queryParams) {
   };
 }
 
-async function getWorkspace(id) {
-  return todoRepository.get(id);
+async function getWorkspace(id, userId) {
+  const isUserTheMember = await workspaceMemberRepository.findByIds({
+    workspace_id: id,
+    user_id: userId,
+  });
+
+  if (!isUserTheMember) return undefined;
+
+  return workspaceRepository.get(id, userId);
 }
 
-async function createWorkspace(newData) {
-  return todoRepository.create(newData);
+async function createWorkspace(newData, userId) {
+  const workspaceData = await workspaceRepository.create(newData);
+  await workspaceMemberRepository.create({
+    workspace_id: workspaceData.id,
+    user_id: userId,
+  });
+
+  return workspaceData;
 }
 
-async function updateWorkspace(id, data) {
-  const existingData = await todoRepository.get(id);
+async function updateWorkspace(id, userId, data) {
+  const existingData = await workspaceRepository.get(id);
 
   if (!existingData) return undefined;
 
-  return todoRepository.update(id, data);
+  const isUserTheMember = await workspaceMemberRepository.findByIds({
+    workspace_id: id,
+    user_id: userId,
+  });
+
+  if (!isUserTheMember) return undefined;
+
+  return workspaceRepository.update(id, userId, data);
 }
 
-async function deleteWorkspace(id) {
-  const existingData = await todoRepository.get(id);
+async function deleteWorkspace(id, userId) {
+  const existingData = await workspaceRepository.get(id);
 
   if (!existingData) return false;
 
-  await todoRepository.delete(id);
+  const isUserTheMember = await workspaceMemberRepository.findByIds({
+    workspace_id: id,
+    user_id: userId,
+  });
+
+  if (!isUserTheMember) return undefined;
+
+  await workspaceRepository.delete(id, userId);
 
   return true;
 }
@@ -60,7 +89,6 @@ const services = {
   getWorkspace,
   createWorkspace,
   updateWorkspace,
-  deleteAllTodos,
   deleteWorkspace,
 };
 

@@ -1,7 +1,7 @@
 const _ = require("lodash");
 const { StatusCodes } = require("http-status-codes");
 
-const todoService = require("../services/todo.service.js");
+const workspaceService = require("../services/workspace.service.js");
 
 async function getAllWorkspaces(req, res) {
   try {
@@ -12,10 +12,13 @@ async function getAllWorkspaces(req, res) {
       page: req.query.page || 1,
     };
 
-    const data = await todoService.getAllWorkspaces(queryParams);
+    const userId = req.user.id;
+
+    const data = await workspaceService.getAllWorkspaces(queryParams, userId);
 
     res.json(data);
   } catch (err) {
+    console.log("🚀 ~ getAllWorkspaces ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when fetching data" });
@@ -24,7 +27,7 @@ async function getAllWorkspaces(req, res) {
 
 // async function getAllMembers(req, res) {
 //   try {
-//     const data = await todoService.getAllMembers(req.query);
+//     const data = await workspaceService.getAllMembers(req.query);
 
 //     res.json(data);
 //   } catch (err) {
@@ -36,7 +39,7 @@ async function getAllWorkspaces(req, res) {
 
 // async function getAllBoards(req, res) {
 //   try {
-//     const data = await todoService.getAllBoards(req.query);
+//     const data = await workspaceService.getAllBoards(req.query);
 
 //     res.json(data);
 //   } catch (err) {
@@ -48,7 +51,7 @@ async function getAllWorkspaces(req, res) {
 
 async function getWorkspace(req, res) {
   try {
-    const data = await todoService.getWorkspace(req.params.id);
+    const data = await workspaceService.getWorkspace(req.params.id);
 
     if (!data) {
       res.status(StatusCodes.NOT_FOUND).json({ message: "Data not found" });
@@ -68,10 +71,13 @@ async function createWorkspace(req, res) {
       name: req.body.name || "",
     };
 
-    const data = await todoService.createWorkspace(newData);
+    const userId = req.user.id;
+
+    const data = await workspaceService.createWorkspace(newData, userId);
 
     res.status(StatusCodes.CREATED).json({ data });
   } catch (err) {
+    console.log("🚀 ~ createWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when creating data" });
@@ -84,7 +90,7 @@ async function updateWorkspace(req, res) {
       name: req.body.name,
     };
 
-    const data = await todoService.updateWorkspace(req.params.id, newData);
+    const data = await workspaceService.updateWorkspace(req.params.id, newData);
 
     if (!data) {
       return res
@@ -102,7 +108,7 @@ async function updateWorkspace(req, res) {
 
 async function deleteWorkspace(req, res) {
   try {
-    const isSuccess = await todoService.deleteWorkspace(req.params.id);
+    const isSuccess = await workspaceService.deleteWorkspace(req.params.id);
 
     if (!isSuccess) {
       return res
