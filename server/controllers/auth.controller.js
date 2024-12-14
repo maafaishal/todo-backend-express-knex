@@ -27,7 +27,6 @@ async function register(req, res) {
       token,
     });
   } catch (err) {
-    console.log("🚀 ~ register ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error during registration" });

@@ -1,16 +1,18 @@
 const { Router } = require("express");
 
 const todoControllers = require("../controllers/todo.controller");
+const authenticateMiddleware = require("../middlewares/authenticate");
 
 const router = Router();
 
-router.get("/", todoControllers.getAllTodos);
-router.get("/:id", todoControllers.getTodo);
+router.use(authenticateMiddleware);
 
-router.post("/", todoControllers.postTodo);
-router.patch("/:id", todoControllers.patchTodo);
+router.get("/:id", todoControllers.dummyResponse);
+router.get("/:id/todos", todoControllers.dummyResponse);
 
-router.delete("/", todoControllers.deleteAllTodos);
-router.delete("/:id", todoControllers.deleteTodo);
+router.post("/", todoControllers.dummyResponse);
+router.put("/:id", todoControllers.dummyResponse);
+
+router.delete("/:id", todoControllers.dummyResponse);
 
 module.exports = router;

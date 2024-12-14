@@ -18,7 +18,6 @@ async function getAllWorkspaces(req, res) {
 
     res.json(data);
   } catch (err) {
-    console.log("🚀 ~ getAllWorkspaces ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when fetching data" });
@@ -79,7 +78,6 @@ async function createWorkspace(req, res) {
 
     res.status(StatusCodes.CREATED).json({ data });
   } catch (err) {
-    console.log("🚀 ~ createWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when creating data" });
@@ -108,7 +106,6 @@ async function updateWorkspace(req, res) {
 
     res.json({ data });
   } catch (err) {
-    console.log("🚀 ~ updateWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when updating data" });
@@ -132,7 +129,6 @@ async function deleteWorkspace(req, res) {
 
     res.status(StatusCodes.NO_CONTENT).send();
   } catch (err) {
-    console.log("🚀 ~ deleteWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when deleting data" });

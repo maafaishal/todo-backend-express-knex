@@ -3,7 +3,6 @@ const knex = require("../utils/knex");
 const TABLE_NAME = "workspaces";
 
 async function all(user_id) {
-  console.log("🚀 ~ all ~ user_id:", user_id);
   return knex("workspaces").rightJoin(
     "workspace_members",
     "workspaces.id",

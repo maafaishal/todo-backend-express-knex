@@ -15,7 +15,6 @@ async function getAllWorkspaces(queryParams, userId) {
     }),
     workspaceRepository.count(),
   ]);
-  console.log("🚀 ~ getAllWorkspaces ~ data:", data);
 
   const totalData = parseInt(countData[0].count, 10);
   const totalPages = Math.ceil(totalData / limit);
