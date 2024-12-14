@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const app = express();
 
 const todoRoutes = require("./routes/todo.route");
+const workspaceRoutes = require("./routes/todo.route");
 
 const port = process.env.PORT || 5000;
 
@@ -25,6 +26,7 @@ app.use(function (req, res, next) {
 });
 
 app.use("/api/todos", todoRoutes);
+app.use("/api/workspaces", workspaceRoutes);
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => console.log(`Listening on port ${port}`));
