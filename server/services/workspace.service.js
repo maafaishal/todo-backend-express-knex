@@ -64,7 +64,7 @@ async function updateWorkspace(id, userId, data) {
 
   if (!isUserTheMember) return undefined;
 
-  return workspaceRepository.update(id, userId, data);
+  return workspaceRepository.update(id, data);
 }
 
 async function deleteWorkspace(id, userId) {
@@ -79,6 +79,7 @@ async function deleteWorkspace(id, userId) {
 
   if (!isUserTheMember) return undefined;
 
+  await workspaceMemberRepository.deleteWorkspaces(id);
   await workspaceRepository.delete(id, userId);
 
   return true;

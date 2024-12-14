@@ -51,7 +51,9 @@ async function getAllWorkspaces(req, res) {
 
 async function getWorkspace(req, res) {
   try {
-    const data = await workspaceService.getWorkspace(req.params.id);
+    const userId = req.user.id;
+
+    const data = await workspaceService.getWorkspace(req.params.id, userId);
 
     if (!data) {
       res.status(StatusCodes.NOT_FOUND).json({ message: "Data not found" });
@@ -90,7 +92,13 @@ async function updateWorkspace(req, res) {
       name: req.body.name,
     };
 
-    const data = await workspaceService.updateWorkspace(req.params.id, newData);
+    const userId = req.user.id;
+
+    const data = await workspaceService.updateWorkspace(
+      req.params.id,
+      userId,
+      newData
+    );
 
     if (!data) {
       return res
@@ -99,7 +107,8 @@ async function updateWorkspace(req, res) {
     }
 
     res.json({ data });
-  } catch {
+  } catch (err) {
+    console.log("🚀 ~ updateWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when updating data" });
@@ -108,7 +117,12 @@ async function updateWorkspace(req, res) {
 
 async function deleteWorkspace(req, res) {
   try {
-    const isSuccess = await workspaceService.deleteWorkspace(req.params.id);
+    const userId = req.user.id;
+
+    const isSuccess = await workspaceService.deleteWorkspace(
+      req.params.id,
+      userId
+    );
 
     if (!isSuccess) {
       return res
@@ -117,7 +131,8 @@ async function deleteWorkspace(req, res) {
     }
 
     res.status(StatusCodes.NO_CONTENT).send();
-  } catch {
+  } catch (err) {
+    console.log("🚀 ~ deleteWorkspace ~ err:", err);
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Error when deleting data" });

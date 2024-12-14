@@ -15,9 +15,18 @@ async function create(data) {
   return results[0];
 }
 
+async function deleteWorkspaces(workspace_id) {
+  const results = await knex(TABLE_NAME)
+    .where({ workspace_id })
+    .del()
+    .returning("*");
+  return results[0];
+}
+
 const repository = {
   findByIds,
   create,
+  deleteWorkspaces,
 };
 
 module.exports = repository;
